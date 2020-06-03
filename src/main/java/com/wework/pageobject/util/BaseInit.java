@@ -27,8 +27,8 @@ public class BaseInit {
 
 
     public BaseInit() {
-        choseBrowser();
-//        driver = new ChromeDriver();
+//        choseBrowser();
+        driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 10);
     }
@@ -38,6 +38,12 @@ public class BaseInit {
         wait = new WebDriverWait(driver, 10);
     }
 
+    /**
+     * 浏览器选择
+     * browser="chrome" mvn -Dtest=TestContent test
+     *
+     * @return
+     */
     public RemoteWebDriver choseBrowser() {
         String browserName = System.getenv("browser");
 
@@ -68,6 +74,7 @@ public class BaseInit {
         driver.quit();
     }
 
+
     /**
      * click方法
      *
@@ -76,5 +83,27 @@ public class BaseInit {
     public void click(By by) {
         wait.until(ExpectedConditions.elementToBeClickable(by));
         driver.findElement(by).click();
+    }
+
+    /**
+     * 输入内容方法
+     *
+     * @param by
+     * @param string
+     */
+    public void sendKeys(By by, String string) {
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+        driver.findElement(by).sendKeys(string);
+    }
+
+    /**
+     * 加载上传文件
+     *
+     * @param by
+     * @param path
+     */
+    public void upload(By by, String path) {
+        wait.until(ExpectedConditions.presenceOfElementLocated(by));
+        driver.findElement(by).sendKeys(path);
     }
 }

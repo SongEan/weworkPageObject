@@ -3,10 +3,10 @@ package com.wework.pageobject.page;
 import com.wework.pageobject.util.BaseInit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 
 /**
@@ -19,10 +19,25 @@ import java.time.Duration;
 public class ContentPage extends BaseInit {
 
     By addMemberText = By.linkText("添加成员");
-    By username = By.name("username");
+    By usernameInput = By.name("username");
     By deleteText = By.linkText("删除");
     By confirmText = By.linkText("确认");
+    By memberSearchInput = By.id("memberSearchInput");
     By clearSearchInputButton = By.id("clearMemberSearchInput");
+    By acctIdInput = By.name("acctid");
+    By mobileInput = By.name("mobile");
+    By saveButton = By.cssSelector(".js_btn_save");
+    By addButton = By.cssSelector(".member_colLeft_top_addBtn");
+    By addDepartmentText = By.linkText("添加部门");
+    By department_tagName = By.name("name");
+    By chooseDepartment = By.linkText("选择所属部门");
+    By chooseDepartmentID = By.xpath("//*[@id='1688853803546277_anchor']");
+    By addDepartmentConfirmButton = By.linkText("确定");
+    By party_name = By.id("party_name");
+    By tagTab = By.linkText("标签");
+    By addTagButton = By.linkText("添加");
+    By tagName = By.cssSelector(".ww_commonCntHead_title_inner_text");
+
 
     public ContentPage(RemoteWebDriver driver) {
         super(driver);
@@ -36,14 +51,14 @@ public class ContentPage extends BaseInit {
      * @param memberAdd_phone
      */
     public ContentPage addMember(String username, String acctid, String memberAdd_phone) {
-        while (driver.findElements(this.username).size() == 0) {
+        while (driver.findElements(this.usernameInput).size() == 0) {
             click(addMemberText);
         }
 
-        driver.findElement(By.name("username")).sendKeys(username);
-        driver.findElement(By.name("acctid")).sendKeys(acctid);
-        driver.findElement(By.name("mobile")).sendKeys(memberAdd_phone);
-        driver.findElement(By.cssSelector(".js_btn_save")).click();
+        sendKeys(usernameInput, username);
+        sendKeys(acctIdInput, acctid);
+        sendKeys(mobileInput, memberAdd_phone);
+        click(saveButton);
 
         return this;
     }
@@ -55,7 +70,7 @@ public class ContentPage extends BaseInit {
      * @return
      */
     public ContentPage searchMember(String keyword) {
-        driver.findElement(By.id("memberSearchInput")).sendKeys(keyword);
+        sendKeys(memberSearchInput, keyword);
         return this;
     }
 
@@ -73,5 +88,70 @@ public class ContentPage extends BaseInit {
 //        删除搜索框输入内容
         click(clearSearchInputButton);
         return this;
+    }
+
+    /**
+     * @return
+     */
+    public String getUserName() {
+        return driver.findElement(By.cssSelector(".member_display_cover_detail_name")).getText();
+    }
+
+    /**
+     * 上传通讯录
+     *
+     * @param path
+     * @return
+     */
+    public ContentPage importFromFile(URL path) {
+        String path_utf = "";
+        try {
+            path_utf = URLDecoder.decode(path.getFile(), "UTF-8");
+            System.out.println(path_utf);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        click(By.cssSelector(".ww_operationBar:nth-child(1) .ww_btn_PartDropdown_left"));
+        click(By.linkText("文件导入"));
+        upload(By.name("file"), path_utf);
+        click(By.linkText("导入"));
+        click(By.linkText("完成"));
+
+        return this;
+    }
+
+
+    /**
+     * 添加部门
+     *
+     * @param department
+     * @return
+     */
+    public ContentPage addDepartment(String department) {
+        click(addButton);
+        click(addDepartmentText);
+        sendKeys(department_tagName, department);
+        click(chooseDepartment);
+        click(chooseDepartmentID);
+        click(addDepartmentConfirmButton);
+        return this;
+    }
+
+    //    获取部门名称
+    public String getPartyName() {
+        return driver.findElement(party_name).getText();
+    }
+
+
+    public ContentPage addTag(String tagName) {
+        click(tagTab);
+        click(addTagButton);
+        sendKeys(department_tagName, tagName);
+        return this;
+    }
+
+    public String getTagName() {
+        return driver.findElement(tagName).getText();
     }
 }
