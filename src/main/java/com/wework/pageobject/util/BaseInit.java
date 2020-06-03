@@ -27,8 +27,8 @@ public class BaseInit {
 
 
     public BaseInit() {
-//        choseBrowser();
-        driver = new ChromeDriver();
+        choseBrowser();
+//        driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 10);
     }
@@ -49,18 +49,18 @@ public class BaseInit {
 
         if (browserName.equalsIgnoreCase("firefox")) {
 //            如果Firefox无法打开，设置安装路径
-            System.setProperty("webdriver.firefox.bin", "Users/songshijie/Documents/Tools/webDriver/geckodriver");
+            System.setProperty("webdriver.firefox.bin", "Users/ssj/Documents/Tools/webDriver/geckodriver");
             driver = new FirefoxDriver();
         } else if (browserName.equalsIgnoreCase("chrome")) {
 //            设置ChromeDriver路径为系统属性
-            System.setProperty("webdriver.chrome.driver", "/Users/songshijie/Documents/Tools/webDriver/chromedriver");
+            System.setProperty("webdriver.chrome.driver", "/Users/ssj/Documents/Tools/webDriver/chromedriver");
 //            实例化driver为ChromeDriver对象
             driver = new ChromeDriver();
         } else if (browserName.equalsIgnoreCase("safari")) {
             driver = new SafariDriver();
         } else {
 //            设置IE浏览器驱动程序的所在路径为系统属性值
-            System.setProperty("webdriver.ie.driver", "/Users/songshijie/Documents/Tools/webDriver/IEDriverServer.exe");
+            System.setProperty("webdriver.ie.driver", "/Users/ssj/Documents/Tools/webDriver/IEDriverServer.exe");
             driver = new InternetExplorerDriver();
         }
         return driver;
