@@ -2,11 +2,15 @@ package com.wework.pageobject.util;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,15 +22,59 @@ import java.util.concurrent.TimeUnit;
  * Time: 23:05
  */
 public class BaseInit {
-    public static WebDriver driver;
+    public RemoteWebDriver driver;
+    public WebDriverWait wait;
 
-//    @BeforeAll
-    public static void beforeTest() {
+
+    public BaseInit() {
+        choseBrowser();
+//        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver, 10);
+    }
+
+    public BaseInit(RemoteWebDriver driver) {
+        this.driver = driver;
+        wait = new WebDriverWait(driver, 10);
+    }
+
+    public RemoteWebDriver choseBrowser() {
+        String browserName = System.getenv("browser");
+
+        if (browserName.equalsIgnoreCase("firefox")) {
+//            如果Firefox无法打开，设置安装路径
+            System.setProperty("webdriver.firefox.bin", "Users/songshijie/Documents/Tools/webDriver/geckodriver");
+            driver = new FirefoxDriver();
+        } else if (browserName.equalsIgnoreCase("chrome")) {
+//            设置ChromeDriver路径为系统属性
+            System.setProperty("webdriver.chrome.driver", "/Users/songshijie/Documents/Tools/webDriver/chromedriver");
+//            实例化driver为ChromeDriver对象
+            driver = new ChromeDriver();
+        } else if (browserName.equalsIgnoreCase("safari")) {
+            driver = new SafariDriver();
+        } else {
+//            设置IE浏览器驱动程序的所在路径为系统属性值
+            System.setProperty("webdriver.ie.driver", "/Users/songshijie/Documents/Tools/webDriver/IEDriverServer.exe");
+            driver = new InternetExplorerDriver();
+        }
+        return driver;
 
     }
 
-//    @AfterAll
-    public static void afterAll() {
+    /**
+     * driver退出
+     */
+    public void quit() {
         driver.quit();
+    }
+
+    /**
+     * click方法
+     *
+     * @param by
+     */
+    public void click(By by) {
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+        driver.findElement(by).click();
     }
 }

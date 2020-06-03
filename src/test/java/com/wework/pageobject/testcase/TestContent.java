@@ -19,16 +19,19 @@ public class TestContent {
     public static ContentPage contentPage;
 
     @BeforeAll
-    public static void beforeAllb() {
+    public static void beforeAll() {
         mainPage = new MainPage();
         contentPage = mainPage.toContent();
     }
 
     @AfterAll
     public static void afterAll() {
-        MainPage.driver.quit();
+        contentPage.quit();
     }
 
+    /**
+     * 新增联系人
+     */
     @Test
     @Order(2)
     void testAddMember() {
@@ -36,8 +39,11 @@ public class TestContent {
         contentPage.addMember("12", "23", "13651362122");
     }
 
-//    @Test
-//    @Order(1)
+    /**
+     * 删除联系人
+     */
+    @Test
+    @Order(1)
     void testDeleteMember() {
         System.out.println("执行2");
         contentPage.searchMember("12").deleteMember();

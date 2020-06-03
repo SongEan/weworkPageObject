@@ -1,9 +1,12 @@
 package com.wework.pageobject.page;
 
+import com.wework.pageobject.util.BaseInit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 
 /**
@@ -13,15 +16,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * Date: 2020-06-01
  * Time: 22:35
  */
-public class ContentPage {
-    RemoteWebDriver driver;
+public class ContentPage extends BaseInit {
 
     By addMemberText = By.linkText("添加成员");
     By username = By.name("username");
     By deleteText = By.linkText("删除");
+    By confirmText = By.linkText("确认");
+    By clearSearchInputButton = By.id("clearMemberSearchInput");
 
     public ContentPage(RemoteWebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
     /**
@@ -32,12 +36,10 @@ public class ContentPage {
      * @param memberAdd_phone
      */
     public ContentPage addMember(String username, String acctid, String memberAdd_phone) {
-//        while(driver.findElements(this.username).size()==0){
-//            driver.findElement(addMember).click();
-//        }
-        new WebDriverWait(driver, 5)
-                .until(ExpectedConditions.elementToBeClickable(addMemberText));
-        driver.findElement(addMemberText).click();
+        while (driver.findElements(this.username).size() == 0) {
+            click(addMemberText);
+        }
+
         driver.findElement(By.name("username")).sendKeys(username);
         driver.findElement(By.name("acctid")).sendKeys(acctid);
         driver.findElement(By.name("mobile")).sendKeys(memberAdd_phone);
@@ -54,8 +56,6 @@ public class ContentPage {
      */
     public ContentPage searchMember(String keyword) {
         driver.findElement(By.id("memberSearchInput")).sendKeys(keyword);
-        new WebDriverWait(driver, 5)
-                .until(ExpectedConditions.elementToBeClickable(deleteText));
         return this;
     }
 
@@ -63,10 +63,15 @@ public class ContentPage {
      * 删除搜索到的成员
      */
     public ContentPage deleteMember() {
-        driver.findElement(deleteText).click();
-        driver.findElement(By.linkText("确认")).click();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        click(deleteText);
+        click(confirmText);
 //        删除搜索框输入内容
-        driver.findElement(By.id("clearMemberSearchInput")).click();
+        click(clearSearchInputButton);
         return this;
     }
 }
